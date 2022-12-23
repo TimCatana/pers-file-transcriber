@@ -5,12 +5,13 @@ from helpers.uploadFile import uploadFile
 from helpers.transcribe import transcribe
 from helpers.getTranscriptionResult import getTranscriptionResult
 from helpers.saveTranscript import saveTranscript
+from helpers.deleteUploadedFile import deleteUploadedFile
 
 
 # main
 if __name__ == "__main__":
 
-    ## GET THE FILE TO TRANSCRIBE
+    # GET THE FILE TO TRANSCRIBE
 
     try:
         filename = sys.argv[1]
@@ -18,7 +19,7 @@ if __name__ == "__main__":
         sys.exit(
             "ERROR - Please enter the audio file name to transcribe as the second argument")
 
-    ## CHECK IF THE FILE IS A VALID AUDIO FILE WITH A VALID EXTENSION
+    # CHECK IF THE FILE IS A VALID AUDIO FILE WITH A VALID EXTENSION
     isValid = validateFileExtension(filename)
 
     if (isValid == False):
@@ -28,16 +29,20 @@ if __name__ == "__main__":
             print(VALID_EXTENSIONS[i])
         sys.exit()
 
-    ## UPLOAD AUDIO FILE TO ASSEMBLYAI
+    # UPLOAD AUDIO FILE TO ASSEMBLYAI
     audioURL = uploadFile(filename)
-  
-    ## BEGIN ASSEMBLYAI TRANSCRIPTION
+
+    # BEGIN ASSEMBLYAI TRANSCRIPTION
     transcriptId = transcribe(audioURL)
-  
-    ## POLL THE TRANSCRIPTION PROGRESS UNTIL IT IS FINISHED
+    print(transcriptId)
+
+    # POLL THE TRANSCRIPTION PROGRESS UNTIL IT IS FINISHED
     result, error = getTranscriptionResult(transcriptId)
 
-    ## SAVE TRANSCRIPT IF SUCCESS, PRINT ERROR IT NOT
+    # DELETE FILE FROM ASSEMBLY AI UPLOADS (TO PROTECT SENSITIVE FILES, MAY BE COMMENTED OUT IF YOU WANT)
+    deleteUploadedFile(transcriptId)
+
+    # SAVE TRANSCRIPT IF SUCCESS, PRINT ERROR IT NOT
     if (error == None):
         saveTranscript(result['text'], filename)
     else:
