@@ -1,0 +1,12 @@
+__pycache__
+
+helpers/__pycache__/
+constants/__pycache__/
+constants/api_secrets.py
+
+files/inputs/*
+!files/inputs/README.txt
+
+files/outputs/*
+!files/outputs/README.txt
+
